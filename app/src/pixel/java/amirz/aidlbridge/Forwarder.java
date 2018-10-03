@@ -27,5 +27,11 @@ public abstract class Forwarder extends BroadcastReceiver {
                 }
             }
         }
+
+        if (this instanceof SmartspaceBroadcastReceiver) {
+            Log.w(TAG, "Sending " + i.getAction() + " to com.android.systemui");
+            i.setPackage("com.android.systemui");
+            context.sendBroadcast(i);
+        }
     }
 }
