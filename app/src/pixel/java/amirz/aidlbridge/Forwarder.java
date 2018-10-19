@@ -16,22 +16,24 @@ public abstract class Forwarder extends BroadcastReceiver {
         i.setPackage(null);
         i.setComponent(null);
 
+        forwardIntent(context, i);
+    }
+
+    protected void forwardIntent(Context context, Intent i) {
         for (ResolveInfo ri : context.getPackageManager().queryBroadcastReceivers(i, 0)) {
             ActivityInfo ai = ri.activityInfo;
             if (ai != null) {
                 String packageName = ai.packageName;
                 if (packageName != null && !BuildConfig.APPLICATION_ID.equals(packageName)) {
-                    Log.w(TAG, "Sending " + i.getAction() + " to " + packageName);
-                    i.setPackage(packageName);
-                    context.sendBroadcast(i);
+                    forwardIntentToPackage(context, i, packageName);
                 }
             }
         }
+    }
 
-        if (this instanceof SmartspaceBroadcastReceiver) {
-            Log.w(TAG, "Sending " + i.getAction() + " to com.android.systemui");
-            i.setPackage("com.android.systemui");
-            context.sendBroadcast(i);
-        }
+    protected void forwardIntentToPackage(Context context, Intent i, String packageName) {
+        Log.w(TAG, "Sending " + i.getAction() + " to " + packageName);
+        i.setPackage(packageName);
+        context.sendBroadcast(i);
     }
 }
