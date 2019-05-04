@@ -40,6 +40,7 @@ public class BridgeImpl extends Binder implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         Log.w(TAG, "onServiceConnected " + this.toString());
         mOverlay = service;
+        mOverlay = new LauncherFeed(mContext);
 
         mConnected = true;
         for (int i = 0; i < mCallbacks.size(); i++) {
