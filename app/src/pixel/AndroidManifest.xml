@@ -8,6 +8,10 @@
         android:protectionLevel="signatureOrSystem" />
     <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.QSB" />
 
+    <protected-broadcast android:name="com.google.android.systemui.smartspace.ENABLE_UPDATE"/>
+    <protected-broadcast android:name="com.google.android.systemui.smartspace.EXPIRE_EVENT"/>
+    <protected-broadcast android:name="com.google.android.systemui.smartspace.CLICK_EVENT"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -40,6 +44,18 @@
         <receiver android:name=".SmartspaceBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".EnableBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.systemui.smartspace.ENABLE_UPDATE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".ExpireBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.systemui.smartspace.EXPIRE_EVENT" />
             </intent-filter>
         </receiver>
 
