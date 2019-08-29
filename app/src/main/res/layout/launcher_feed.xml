@@ -20,6 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="48sp"
-            android:text="Launcher feed" />
+            android:text="" />
     </FrameLayout>
 </amirz.aidlbridge.FeedController>

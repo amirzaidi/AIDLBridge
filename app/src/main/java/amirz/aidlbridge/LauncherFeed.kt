@@ -1,6 +1,9 @@
 package amirz.aidlbridge
 
+import android.app.ActivityOptions
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +16,7 @@ import com.google.android.libraries.launcherclient.ILauncherOverlayCallback
 
 class LauncherFeed(context: Context) : ILauncherOverlay.Stub() {
 
+    private val mContext = context
     private val handler = Handler(Looper.getMainLooper())
     private val windowService = context.getSystemService(WindowManager::class.java)
     private val feedController = (LayoutInflater.from(ContextThemeWrapper(context, android.R.style.Theme_Material))
@@ -20,6 +24,8 @@ class LauncherFeed(context: Context) : ILauncherOverlay.Stub() {
 
     private var callback: ILauncherOverlayCallback? = null
     private lateinit var layoutParams: WindowManager.LayoutParams
+
+    private var mProgress = 0f
 
     private var feedAttached = false
         set(value) {
@@ -105,6 +111,10 @@ class LauncherFeed(context: Context) : ILauncherOverlay.Stub() {
 
     override fun setActivityState(flags: Int) {
         Log.d(TAG, "setActivityState($flags)")
+        if (flags == 3 && shouldClose) {
+            shouldClose = false
+            Handler(Looper.getMainLooper()).post { feedController.closeOverlay(true, 0) }
+        }
     }
 
     override fun startSearch(data: ByteArray?, bundle: Bundle?): Boolean {
@@ -118,7 +128,20 @@ class LauncherFeed(context: Context) : ILauncherOverlay.Stub() {
         if (!touchable && !isDragging) {
             feedAttached = false
         }
+
+        if (progress == 1f && mProgress != 1f) {
+            val intent = Intent.makeMainActivity(ComponentName.unflattenFromString(
+                    "com.android.settings/.Settings"))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val anim = ActivityOptions.makeCustomAnimation(mContext, android.R.anim.fade_in, android.R.anim.fade_out)
+            mContext.startActivity(intent, anim.toBundle())
+            Log.d("AnimatorPlaybackCtrl", "Launch")
+            shouldClose = true
+        }
+        mProgress = progress
     }
+
+    var shouldClose = false
 
     companion object {
 

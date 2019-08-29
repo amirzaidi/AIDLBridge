@@ -47,6 +47,7 @@ public class FlingBlockCheck {
     }
 
     public boolean isBlocked() {
-        return mBlockFling;
+        //return mBlockFling;
+        return false;
     }
 }
